@@ -7,6 +7,7 @@ import socket
 import json
 import requests
 from geopy.geocoders import Nominatim
+import os
 
 ###IP###
 def validateIP(str):
@@ -48,8 +49,8 @@ def getIP2(ip):
         "city": response["city"],
         "zip": response["postal"],
         "prov": response["org"],
-        "lon": response["loc"].split(",-")[0],
-        "lat": response["loc"].split(",-")[1],
+        "lon": response["loc"].split(",")[1],
+        "lat": response["loc"].split(",")[0],
         "addr": address
     }
     return data
@@ -76,3 +77,34 @@ class ipInformationView(APIView):
                 "result": False
             })
 ###IP###
+
+###history###
+class historyView(APIView):
+    def get(self, request):
+        try:
+            with open("history.json", "r") as file:
+                dataJson = json.loads(file.read())
+            history = dataJson["history"]
+        except ValueError as er:
+            print(er)
+        return Response({
+            "result": json.dumps(history)
+        })
+
+    def post(self, request):
+        with open("history.json", "r") as file:
+            dataJson = json.loads(file.read())
+            dataJsonArr = dataJson["history"]
+            if len(dataJsonArr) == 10:
+                del dataJsonArr[0]
+        dataJsonArr.append({
+            "type": request.data["type"],
+            "target": request.data["target"],
+            "timePoint": request.data["timePoint"]
+        })
+        with open ("history.json", "w") as file:
+            file.write(json.dumps(dataJson))
+        return Response({
+            "result":123
+        })
+###history###

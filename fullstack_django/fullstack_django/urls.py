@@ -21,5 +21,6 @@ from backend_api.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("ipInformation", ipInformationView.as_view())
+    path("ipInformation", ipInformationView.as_view()),
+    path("history", historyView.as_view()),
 ]
