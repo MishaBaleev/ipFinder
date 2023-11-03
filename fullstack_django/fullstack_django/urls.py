@@ -24,5 +24,7 @@ urlpatterns = [
     path("ipInformation", ipInformationView.as_view()),
     path("history", historyView.as_view()),
     path("historyDelete", historyDeleteView.as_view()),
-    path("domainInformation", domainInformationView.as_view())
+    path("domainInformation", domainInformationView.as_view()),
+    path("saveToFileIP", saveToFileIP.as_view()),
+    path("getMyIP", getMyIP.as_view())
 ]

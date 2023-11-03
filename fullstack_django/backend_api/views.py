@@ -11,7 +11,8 @@ import os
 from whois import query
 import validators
 from scapy.all import *
-
+from geopy.geocoders import Nominatim
+import http.client as hClient
 
 ###IP###
 def validateIP(str):
@@ -30,6 +31,8 @@ def validateIP(str):
 
 def getIP1(ip):
     response = requests.get(url=f'http://ip-api.com/json/{ip}').json()
+    geolocator = Nominatim(user_agent="ipFinder")
+    address = geolocator.reverse(str(response["lat"])+","+str(response["lon"])).address
     data = {
         "country": response["country"],
         "region": response["regionName"],
@@ -37,11 +40,14 @@ def getIP1(ip):
         "zip": response["zip"],
         "prov": response["isp"],
         "lon": response["lon"],
-        "lat": response["lat"]
+        "lat": response["lat"],
+        "address": address
     }
     return data
 def getIP2(ip):
     response = requests.get(url = f"https://ipinfo.io/{ip}/json").json()
+    geolocator = Nominatim(user_agent="ipFinder")
+    address = geolocator.reverse(response["loc"]).address
     data = {
         "country": response["country"],
         "region": response["region"],
@@ -49,7 +55,23 @@ def getIP2(ip):
         "zip": response["postal"],
         "prov": response["org"],
         "lon": response["loc"].split(",")[1],
-        "lat": response["loc"].split(",")[0]
+        "lat": response["loc"].split(",")[0],
+        "address": address
+    }
+    return data
+
+def getIP3(ip):
+    response = requests.get(url = f"https://freeipapi.com/api/json/{ip}").json()
+    geolocator = Nominatim(user_agent="ipFinder")
+    address = geolocator.reverse(str(response["latitude"])+","+str(response["longitude"]), language="RU").address
+    data = {
+        "country": response["countryName"],
+        "region": response["regionName"],
+        "city": response["cityName"],
+        "zip": response["zipCode"],
+        "lon": response["longitude"],
+        "lat": response["latitude"],
+        "address": address
     }
     return data
 
@@ -64,13 +86,15 @@ class ipInformationView(APIView):
                 return Response({
                     "result": True, 
                     "data1": getIP1(ipStr),
-                    "data2": getIP2(ipStr)
+                    "data2": getIP2(ipStr),
+                    "data3": getIP3(ipStr)
                 })
             else:
                 return Response({
                     "result": False
                 })
-        except:
+        except ValueError as err:
+            print(err)
             return Response({
                 "result": False
             })
@@ -140,7 +164,8 @@ class domainInformationView(APIView):
     
     def post(self, request):
         if (validators.domain(request.data["target"]) == True):
-            domain = query('google.com').__dict__
+            domain = query(request.data["target"]).__dict__
+            # print(domain)
             try:
                 searchResult = {
                     "ip": socket.gethostbyname(request.data["target"]),
@@ -148,14 +173,14 @@ class domainInformationView(APIView):
                     "country": domain["registrant_country"],
                     "createDate": domain["creation_date"],
                     "expDate": domain["expiration_date"],
-                    "org": domain["registrant"] 
+                    "org": domain["registrant"],
+                    "nameservers": domain["name_servers"]
                 }
                 return Response({
                     "result": True,
                     "data": searchResult
                 })
-            except Exception as err:
-                print(err) 
+            except: 
                 return Response({
                     "result": False
                 })
@@ -164,3 +189,50 @@ class domainInformationView(APIView):
                "result": False
            })
 ###domain###
+
+###saveFile###
+class saveToFileIP(APIView):
+    def get(self, request):
+        pass 
+
+    def post(self, request):
+        try:
+            datas = {
+                "data1": "IP-API",
+                "data2": "IPINFO",
+                "data3": "FreeIPAPI"
+            }
+            data = json.loads(request.data["data"])
+            fileString = ""
+
+            for key in data:
+                fileString += datas[key] + "\n"
+                for key2 in data[key]:
+                    fileString += key2 + ": " + str(data[key][key2]) + "\n"
+                fileString += "----------------" + "\n"
+
+            with open(f"{os.getcwd().replace("fullstack_django", "IPReports")}/{request.data["timePoint"]}.txt", "w") as file:
+                file.write(fileString)
+                return Response({
+                    "result": True,
+                    "fileName": f"{request.data["timePoint"]}.txt"
+                })
+        except: 
+            return Response({
+                "result": False
+            })
+###saveFile###
+
+###getMyIP###
+class getMyIP(APIView):
+    def get(self, request):
+        conn = hClient.HTTPConnection("ifconfig.me")
+        conn.request("GET", "/ip")
+        result = conn.getresponse().read()
+        return Response({
+            "result": result
+        })
+    
+    def post(self, request):
+        pass
+###getMyIP###

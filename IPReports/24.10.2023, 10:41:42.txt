@@ -1,0 +1,26 @@
+IP-API
+country: Russia
+region: Rostov Oblast
+city: Rostov-on-Don
+zip: 344039
+prov: Federal State Institution "cientific Research Institute for System Ana
+lon: 39.7283
+lat: 47.2247
+address: ЮФУ, 105, Большая Садовая улица, Кировский район, Ростов-на-Дону, городской округ Ростов-на-Дону, Ростовская область, Южный федеральный округ, 344006, Россия
+----------------
+IPINFO
+country: RU
+region: Rostov
+city: Rostov-na-Donu
+zip: 344000
+prov: AS5480 State Educational institution for High professional education 'Southern Federal University'
+lon: 39.7233
+lat: 47.2313
+address: 125, Университетский переулок, Кировский район, Ростов-на-Дону, городской округ Ростов-на-Дону, Ростовская область, Южный федеральный округ, 344006, Россия
+----------------
+Geolocation-DB
+country: Russia
+lon: 37.6068
+lat: 55.7386
+address: Пречистенская набережная, район Хамовники, Москва, Центральный федеральный округ, 119072, Россия
+----------------
