@@ -26,5 +26,6 @@ urlpatterns = [
     path("historyDelete", historyDeleteView.as_view()),
     path("domainInformation", domainInformationView.as_view()),
     path("saveToFileIP", saveToFileIP.as_view()),
-    path("getMyIP", getMyIP.as_view())
+    path("getMyIP", getMyIP.as_view()),
+    path("getOrgs", getOrgs.as_view())
 ]

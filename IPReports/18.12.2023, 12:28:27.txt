@@ -1,0 +1,29 @@
+IP-API
+country: Russia
+region: Rostov Oblast
+city: Rostov-on-Don
+zip: 344039
+prov: State Educational institution for High professional education 'Southern Federal
+lon: 39.7283
+lat: 47.2247
+address: 105, Большая Садовая улица, Кировский район, Ростов-на-Дону, городской округ Ростов-на-Дону, Ростовская область, Южный федеральный округ, 344006, Россия
+----------------
+IPINFO
+country: RU
+region: Rostov
+city: Rostov-na-Donu
+zip: 344000
+prov: AS5480 State Educational institution for High professional education 'Southern Federal University'
+lon: 39.7233
+lat: 47.2313
+address: 125, Университетский переулок, Кировский район, Ростов-на-Дону, городской округ Ростов-на-Дону, Ростовская область, Южный федеральный округ, 344006, Россия
+----------------
+FreeIPAPI
+country: Russian Federation
+region: Rostovskaya oblast'
+city: Rostov-na-Donu
+zip: 344022
+lon: 39.711872
+lat: 47.236038
+address: улица Текучёва, Рабочий городок, Октябрьский район, Ростов-на-Дону, городской округ Ростов-на-Дону, Ростовская область, Южный федеральный округ, 344003, Россия
+----------------

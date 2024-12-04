@@ -12,7 +12,9 @@ from whois import query
 import validators
 from scapy.all import *
 from geopy.geocoders import Nominatim
+from geopy.distance import geodesic as GD
 import http.client as hClient
+from math import radians, cos, sin, asin, sqrt 
 
 ###IP###
 def validateIP(str):
@@ -93,8 +95,7 @@ class ipInformationView(APIView):
                 return Response({
                     "result": False
                 })
-        except ValueError as err:
-            print(err)
+        except:
             return Response({
                 "result": False
             })
@@ -236,3 +237,45 @@ class getMyIP(APIView):
     def post(self, request):
         pass
 ###getMyIP###
+
+###getOrgs###
+def getAllOrgs(key_word, coords):
+    token = "pk.eyJ1IjoiYmFsZWV2IiwiYSI6ImNsYXBqNmk4dTE5Y3UzcWxiYmt1bTJtcG8ifQ.aE8lRdfDnWq52szIP7gAHw"
+    lng, lat = coords[0], coords[1]
+    url = f"https://api.mapbox.com/geocoding/v5/mapbox.places/{key_word}.json?proximity={lng},{lat}&access_token={token}"
+    response = requests.get(url).json()
+    return response["features"]
+
+def distance(La1, La2, Lo1, Lo2):
+    Lo1 = radians(Lo1) 
+    Lo2 = radians(Lo2) 
+    La1 = radians(La1) 
+    La2 = radians(La2) 
+    D_Lo = Lo2 - Lo1 
+    D_La = La2 - La1 
+    P = sin(D_La / 2)**2 + cos(La1) * cos(La2) * sin(D_Lo / 2)**2 
+    Q = 2 * asin(sqrt(P)) 
+    R_km = 6371 
+    return(Q * R_km) 
+
+class getOrgs(APIView):
+    def get(self, request):
+        return Response({})
+    def post(self, request):
+        key_word = request.data["key_word"]
+        coords = [float(request.data["lng"]), float(request.data["lat"])]
+        features = getAllOrgs(key_word, coords)
+        result_arr = []
+        for feature in features:
+            distance_ = distance(feature["center"][1], coords[1], feature["center"][0], coords[0])
+            if distance_ <= 1:
+                result_arr.append({
+                    "name": feature["text"],
+                    "coords": feature["center"],
+                    "distance": distance_
+                })  
+        
+        return Response({
+            "result": result_arr
+        })
+###getOrgs###
